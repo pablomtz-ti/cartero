@@ -1,177 +1,168 @@
-<div align="center">
+# Cartero
 
-# ✉️ Cartero
+Mira qué cartas envía tu ordenador por Internet.
 
-**Mira qué cartas envía tu ordenador por Internet.**
+Monitor de red para usuarios sin conocimientos técnicos. Muestra qué programas de tu ordenador se comunican por Internet, con quién lo hacen y si hay motivos para preocuparse, explicado en lenguaje cotidiano.
 
 [![CI](https://github.com/pablomtz-ti/cartero/actions/workflows/ci.yml/badge.svg)](https://github.com/pablomtz-ti/cartero/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Plataformas](https://img.shields.io/badge/plataformas-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
-<img src="docs/live.png" alt="Vista en vivo de Cartero: una tarjeta por programa con semáforo de riesgo" width="900">
+![Vista en vivo de Cartero](docs/live.png)
 
-</div>
+## Motivación
 
-Wireshark es fantástico… si sabes qué es un *TLS Client Hello*. **Cartero** es un monitor de red
-para el resto del mundo: en lugar de tablas de paquetes, enseña **una tarjeta por programa** que
-responde en castellano llano a tres preguntas: *¿con quién habla?*, *¿qué está haciendo?* y
-*¿debería preocuparme?*
+Herramientas como Wireshark son muy potentes, pero presuponen que el usuario entiende conceptos como TCP, DNS o TLS. Cartero parte del problema contrario: una persona sin formación técnica quiere saber si su ordenador está haciendo algo raro. En lugar de listar paquetes, la aplicación agrupa la actividad por programa y responde a tres preguntas: con quién habla, qué está haciendo y si debería preocuparse.
 
-## La metáfora: el rastreador de cartas
+## Modelo conceptual
 
-| Red | Cartero |
+La interfaz utiliza la metáfora del envío postal. Cada conexión se presenta como una carta que sale de tu casa hacia un destinatario.
+
+| Concepto de red | Representación en Cartero |
 |---|---|
-| Tu PC / un proceso | **Tu casa** (o "tu navegador Chrome") |
-| IP de destino `142.250.184.14` | **"Servidores de Google (EE. UU.)"** |
-| Tráfico cifrado (HTTPS, QUIC, SSH…) | 🔒 **Sobre cerrado y lacrado**: nadie en el camino puede leerlo |
-| Tráfico en claro (HTTP, DNS…) | ✉️ **Postal abierta**: cualquiera en tu Wi-Fi podría leerla |
+| Proceso local | Remitente ("Navegador Google Chrome") |
+| Dirección IP de destino | Destinatario identificado ("Google, EE. UU.") |
+| Tráfico cifrado (HTTPS, QUIC, SSH) | Sobre cerrado: nadie en el camino puede leer el contenido |
+| Tráfico en claro (HTTP, DNS) | Postal abierta: cualquiera en la misma red podría leerla |
 
-### Traducción total de conceptos técnicos
+Ningún término técnico aparece en el texto principal. Los datos de bajo nivel (IP, puerto, protocolo, dominio) quedan disponibles en una sección plegable de detalles técnicos.
 
-| Lo que dice Wireshark | Lo que dice Cartero |
+| Evento técnico | Descripción que muestra Cartero |
 |---|---|
-| `POST /login.php (x-www-form-urlencoded)` | ⚠️ Enviando un formulario abierto (¡cuidado si escribiste contraseñas!) |
-| `TCP 443 → v10.events.data.microsoft.com` | 📊 Servicio interno de Windows enviando estadísticas de uso en silencio |
-| `GET /pixel?id=9928 → doubleclick.net` | 👁️ Rastreador de publicidad observando qué página visitas |
-| `UDP 8801 ↔ zoom.us, 1,2 MB/s` | Llamada de voz o vídeo, o transmisión en directo |
-| `TCP 4444 → IP sin nombre` | 🚨 Conexión rara a un destino sin nombre conocido |
-| Paquetes de 60 B cada 10,0 s | Enviando datos pequeños cada 10 segundos en segundo plano |
+| `POST /login.php (x-www-form-urlencoded)` sobre HTTP | Enviando un formulario abierto (cuidado si escribiste contraseñas) |
+| `TCP 443 -> v10.events.data.microsoft.com` | Servicio interno de Windows enviando estadísticas de uso en silencio |
+| Petición a `doubleclick.net` | Rastreador de publicidad observando qué página visitas |
+| `UDP 8801 <-> zoom.us`, 1,2 MB/s | Llamada de voz o vídeo, o transmisión en directo |
+| `TCP 4444 ->` IP sin nombre | Conexión rara a un destino sin nombre conocido |
+| Paquetes de 60 bytes cada 10 s | Enviando datos pequeños cada 10 segundos en segundo plano |
 
-## Qué hace
+## Funcionalidades
 
-<table>
-<tr>
-<td width="50%"><img src="docs/home.png" alt="Pantalla de inicio"></td>
-<td width="50%"><img src="docs/scan.png" alt="Veredicto del escaneo de 30 segundos"></td>
-</tr>
-<tr>
-<td><b>Un botón, una pregunta.</b> Sin menús ni configuración: «¿Qué quieres revisar hoy?»</td>
-<td><b>Modo detective.</b> Escanea 30 segundos y da un veredicto claro con semáforo.</td>
-</tr>
-</table>
+| Inicio | Resultado del escaneo |
+|---|---|
+| ![Pantalla de inicio](docs/home.png) | ![Veredicto del escaneo](docs/scan.png) |
 
-- **🔍 Revisar si hay algo raro**: 30 segundos de observación → veredicto 🟢 / 🟡 / 🔴.
-- **👀 Feed en vivo**: tarjetas agrupadas por programa, actualizadas solas.
-- **🏠 ¿Quién está en mi Wi-Fi?**: "Tu router", "iPhone de Juan", "Samsung TV", "Aparato inteligente
-  (enchufe, bombilla…)", detección de móviles con **dirección privada** y aviso de dispositivos desconocidos.
-- **🚦 Semáforo de riesgo**: cada aviso responde *¿Qué está pasando? · ¿Por qué importa? · ¿Qué debo hacer?*
-- **🔎 «¿Qué es esto?»**: explicación de dos líneas + enlaces a Google y VirusTotal (nunca se consultan solos).
-- **Funciones anti-pánico**:
-  - *Silenciar ruido normal* (activado por defecto): oculta actualizaciones, antivirus y sincronización
-    en la nube: «Ocultando 42 conexiones normales del sistema (haz clic para verlas)».
-  - *Sello azul ✔* para empresas conocidas y verificadas (Microsoft, Apple, Google, Amazon, Cloudflare…).
-  - *Glosario contextual*: pasa el ratón por *servidor*, *candado*, *rastreador*, *segundo plano*… y aparece
-    un bocadillo con un ejemplo cotidiano.
+- Escaneo rápido: observa la actividad durante 30 segundos y emite un veredicto en tres niveles (sin incidencias, para revisar, atención).
+- Vista en vivo: una tarjeta por programa que se actualiza automáticamente.
+- Dispositivos de la red local: identifica el router, el propio equipo y el resto de aparatos con nombres comprensibles ("iPhone de Juan", "Samsung TV", "Aparato inteligente"), detecta móviles que usan direcciones MAC privadas y señala los dispositivos desconocidos.
+- Explicación de avisos: cada alerta responde a qué está pasando, por qué importa y qué debe hacer el usuario.
+- Consulta "¿Qué es esto?": explicación breve del programa y del destino, con enlaces a una búsqueda web y a VirusTotal que solo se abren a petición del usuario.
+- Reducción de falsas alarmas:
+  - El filtro de ruido normal, activo por defecto, oculta actualizaciones del sistema, antivirus y sincronización en la nube, e indica cuántas conexiones se han ocultado.
+  - Las empresas conocidas (Microsoft, Apple, Google, Amazon, Cloudflare, entre otras) se marcan como verificadas.
+  - Un glosario contextual muestra una definición breve al pasar el ratón sobre términos como servidor, candado o rastreador.
 
-<img src="docs/wifi.png" alt="Lista de dispositivos de la red Wi-Fi" width="900">
+![Dispositivos de la red local](docs/wifi.png)
 
 ## Instalación
+
+Requiere Python 3.10 o superior.
 
 ```bash
 git clone https://github.com/pablomtz-ti/cartero.git
 cd cartero
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate        # En Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
 ## Uso
 
 ```bash
-cartero --demo            # ordenador ficticio con casos típicos: ideal para probarlo
-cartero                   # tu tráfico real (modo básico, sin permisos especiales)
-sudo cartero --captura    # análisis completo: datos subidos/bajados, nombres reales, formularios en claro
-cartero update-data       # descarga listas completas de rastreadores (Disconnect.me) y fabricantes (IEEE)
+cartero --demo            # escenario ficticio, no requiere permisos
+cartero                   # tráfico real en modo básico
+sudo cartero --captura    # análisis completo con captura de paquetes
+cartero update-data       # descarga listas ampliadas de rastreadores y fabricantes
 ```
 
-Se abre solo en el navegador en `http://127.0.0.1:8765`.
+La interfaz se abre en el navegador en `http://127.0.0.1:8765`.
 
-| Modo | Permisos | Qué ve |
+| Modo | Requisitos | Información disponible |
 |---|---|---|
-| `--demo` | ninguno | Un escenario inventado que recorre todas las reglas |
-| básico | usuario normal¹ | Qué programa habla con quién, cifrado sí/no, latidos por reconexión |
-| `--captura` | administrador + `pip install -e ".[captura]"` | + bytes por programa (asimetría), DNS y SNI, formularios HTTP, ritmo exacto de latidos |
-| `--online` | — | + país y empresa de destinos sin nombre vía ipinfo.io (**opcional**, envía esas IP a un tercero) |
+| `--demo` | Ninguno | Escenario simulado que cubre todas las reglas de detección |
+| Básico | Usuario sin privilegios (1) | Programa, destino, cifrado y comunicaciones periódicas detectadas por reconexión |
+| `--captura` | Administrador y `pip install -e ".[captura]"` | Además: volumen de datos por programa, nombres obtenidos de DNS y SNI, formularios HTTP en claro e intervalos exactos |
+| `--online` | Conexión a Internet | Además: país y organización de destinos sin nombre mediante ipinfo.io. Es opcional y envía esas direcciones a un tercero |
 
-¹ En Linux y Windows sin privilegios no se ven los procesos de otros usuarios; Cartero lo indica y los agrupa
-como «Programas protegidos del sistema». En macOS hace falta `sudo` para ver la mayoría.
+(1) Sin privilegios, Linux y Windows no exponen los procesos de otros usuarios; Cartero los agrupa como "Programas protegidos del sistema" e informa de ello. En macOS se necesita `sudo` para ver la mayoría de procesos.
 
-## Cómo funciona
+## Arquitectura
 
 ```mermaid
 flowchart LR
     A[psutil<br/>conexiones por proceso] --> E
-    B[scapy opcional<br/>bytes · DNS · SNI · HTTP] --> E
-    E[Engine<br/>agrupa en flujos] --> N
-    R[Resolver<br/>DNS inverso · SNI · ipinfo opcional] --> C
-    K[(Knowledge<br/>JSON locales)] --> C
-    C[Classifier<br/>destino + vía] --> N
-    N[Narrator<br/>tarjetas y avisos en castellano] --> S[Servidor HTTP local<br/>127.0.0.1]
-    S --> UI[Interfaz web<br/>HTML + JS sin dependencias]
+    B[scapy, opcional<br/>bytes, DNS, SNI, HTTP] --> E
+    E[Engine<br/>agrupación en flujos] --> N
+    R[Resolver<br/>DNS inverso, SNI, ipinfo opcional] --> C
+    K[(Knowledge<br/>bases JSON locales)] --> C
+    C[Classifier<br/>destino y canal] --> N
+    N[Narrator<br/>tarjetas y avisos] --> S[Servidor HTTP<br/>127.0.0.1]
+    S --> UI[Interfaz web<br/>HTML y JavaScript sin dependencias]
 ```
 
-Antes de pintar nada, el motor hace **cuatro cruces automáticos**:
+El análisis combina cuatro fuentes de información antes de generar cada tarjeta:
 
-1. **Ruido conocido** ([`known_domains.json`](src/cartero/data/known_domains.json), [`ip_ranges.json`](src/cartero/data/ip_ranges.json)):
-   más de 170 dominios y rangos de CDN, telemetría y servicios del sistema, buscados por sufijo de dominio más largo
-   (`notgoogle.com` nunca coincide con `google.com`).
-2. **Rastreadores** ([`trackers.json`](src/cartero/data/trackers.json) + lista de Disconnect.me con `update-data`).
-3. **Asimetría y ritmo** ([`behavior.py`](src/cartero/behavior.py)):
-   *mucho baja, poco sube* → consumiendo contenido; *mucho sube* → subiendo archivos o videollamada;
-   *paquetes diminutos a intervalos regulares* (coeficiente de variación < 0,25) → latido / esperando órdenes.
-   Sin captura, los latidos se detectan por las reconexiones periódicas.
-4. **Explicador de procesos** ([`processes.json`](src/cartero/data/processes.json)): `svchost.exe` →
-   «Servicio interno de Windows», `mDNSResponder` → «Buscador de dispositivos en tu Wi-Fi».
+1. Infraestructura conocida ([`known_domains.json`](src/cartero/data/known_domains.json), [`ip_ranges.json`](src/cartero/data/ip_ranges.json)): más de 170 dominios y rangos de CDN, telemetría y servicios del sistema. La búsqueda se hace por el sufijo de dominio más largo respetando los límites de etiqueta, de modo que `notgoogle.com` no coincide con `google.com`.
+2. Rastreadores ([`trackers.json`](src/cartero/data/trackers.json)), ampliable con la lista de Disconnect.me mediante `cartero update-data`.
+3. Patrones de comportamiento ([`behavior.py`](src/cartero/behavior.py)):
+   - Mucho tráfico de bajada y poco de subida: consumo de contenido.
+   - Mucho tráfico de subida: subida de archivos, copia de seguridad o videollamada.
+   - Envíos pequeños a intervalos regulares (coeficiente de variación inferior a 0,25): comunicación periódica o heartbeat.
 
-El nombre del destino se obtiene, por orden de fiabilidad, de: respuestas DNS y SNI vistas en la captura
-(con un parser propio de TLS ClientHello, [`capture.py`](src/cartero/capture.py)), DNS inverso en segundo plano y,
-solo si se pide, ipinfo.io.
+   Sin captura de paquetes, la periodicidad se estima a partir de las reconexiones.
+4. Identificación de procesos ([`processes.json`](src/cartero/data/processes.json)): traduce nombres como `svchost.exe` o `mDNSResponder` a descripciones comprensibles.
+
+Para nombrar cada destino se consultan, por orden de fiabilidad, estas fuentes:
+
+- Las respuestas DNS y el campo SNI observados durante la captura. El ClientHello de TLS se analiza con un parser propio, en [`capture.py`](src/cartero/capture.py).
+- La resolución inversa de DNS, que se hace en segundo plano.
+- ipinfo.io, solo si el usuario lo activa expresamente.
 
 ## Privacidad y seguridad
 
-- **Nada sale de tu ordenador** salvo que actives `--online` o `update-data`, y los enlaces de «¿Qué es esto?»
-  solo se abren si haces clic.
-- **No se guarda el contenido de los paquetes**: solo se cuentan bytes y se leen nombres de dominio.
-  De un formulario en claro solo se anota *que existió*, nunca lo que contenía.
-- El servidor escucha **solo en `127.0.0.1`**, valida la cabecera `Host` (protección contra *DNS rebinding*),
-  envía una *Content-Security-Policy* estricta y bloquea el *path traversal*.
-- La interfaz pinta todo lo que llega de la red con `textContent` (nunca `innerHTML`), así que un dominio
-  malicioso no puede inyectar HTML.
+- Ningún dato sale del equipo salvo que se utilicen `--online` o `update-data` de forma explícita.
+- No se almacena el contenido de los paquetes. Solo se contabilizan bytes y se leen nombres de dominio. De un formulario enviado en claro se registra únicamente que existió, no su contenido.
+- El servidor escucha exclusivamente en `127.0.0.1`. Además:
+  - valida la cabecera `Host` como protección frente a DNS rebinding;
+  - aplica una Content-Security-Policy restrictiva;
+  - impide el acceso a rutas fuera del directorio de la interfaz.
+- La interfaz inserta todo el contenido procedente de la red mediante `textContent` y nunca mediante `innerHTML`, lo que evita la inyección de HTML a través de nombres de dominio manipulados.
 
 ## Desarrollo
 
 ```bash
 pip install -e ".[dev]"
-pytest          # 36 tests: clasificador, narrador, parser TLS/HTTP, ARP multiplataforma, servidor…
+pytest
 ruff check .
 ```
 
-La integración continua ejecuta lint y tests en Linux, macOS y Windows con Python 3.10 y 3.13.
+La batería de pruebas cubre el clasificador, el generador de textos, el parser de TLS y HTTP, la lectura de la tabla ARP en los tres sistemas operativos y el servidor. La integración continua ejecuta lint y pruebas en Linux, macOS y Windows con Python 3.10 y 3.13.
 
 ```
 src/cartero/
-├── cli.py          # punto de entrada y opciones
-├── engine.py       # agrupa conexiones en flujos, escaneo de 30 s
-├── collector.py    # conexiones del sistema (psutil)
-├── capture.py      # captura opcional: bytes, DNS, SNI, formularios HTTP
-├── resolver.py     # nombres de destino sin bloquear
-├── classifier.py   # destino (empresa, país, rastreador…) y vía (sobre cerrado / postal)
-├── behavior.py     # latidos, asimetría, formateo en castellano
-├── narrator.py     # tarjetas, avisos con 3 preguntas, veredicto
-├── wifi.py         # dispositivos de la red (ARP/NDP en Linux, macOS y Windows)
-├── demo.py         # ordenador ficticio
-├── server.py       # API + estáticos en 127.0.0.1
-├── data/           # bases de conocimiento en JSON
-└── web/            # interfaz (HTML, CSS y JS sin dependencias)
+├── cli.py          punto de entrada y opciones de línea de comandos
+├── engine.py       agrupación de conexiones en flujos y escaneo
+├── collector.py    lectura de conexiones del sistema (psutil)
+├── capture.py      captura opcional: bytes, DNS, SNI y formularios HTTP
+├── resolver.py     resolución de nombres no bloqueante
+├── classifier.py   clasificación de destinos y canales
+├── behavior.py     detección de periodicidad y asimetría
+├── narrator.py     generación de tarjetas, avisos y veredicto
+├── wifi.py         descubrimiento de dispositivos en la red local
+├── demo.py         escenario simulado
+├── server.py       API y ficheros estáticos
+├── data/           bases de conocimiento en JSON
+└── web/            interfaz (HTML, CSS y JavaScript)
 ```
 
-## Hoja de ruta
+## Trabajo futuro
 
-- [ ] Empaquetado como ejecutable único para Windows y macOS (PyInstaller).
-- [ ] Historial: «¿qué hizo este programa ayer?».
-- [ ] Detección de DNS sobre HTTPS y VPNs activas.
-- [ ] Traducción de la interfaz al inglés.
+- Distribución como ejecutable único para Windows y macOS.
+- Historial de actividad por programa.
+- Detección de DNS sobre HTTPS y de VPN activas.
+- Interfaz en inglés.
 
 ## Licencia
 
-[MIT](LICENSE) © Pablo Martínez
+Distribuido bajo licencia [MIT](LICENSE).
