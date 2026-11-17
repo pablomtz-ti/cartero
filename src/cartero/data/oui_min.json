@@ -1,0 +1,10 @@
+{
+  "_comment": "Mínimo de reserva. Cartero usa la base de datos IEEE del sistema si existe, o la que descarga 'cartero update-data'.",
+  "B827EB": "Raspberry Pi",
+  "DCA632": "Raspberry Pi",
+  "E45F01": "Raspberry Pi",
+  "005056": "VMware (máquina virtual)",
+  "000C29": "VMware (máquina virtual)",
+  "080027": "VirtualBox (máquina virtual)",
+  "525400": "QEMU/KVM (máquina virtual)"
+}

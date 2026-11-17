@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cartero"
+version = "0.1.0"
+description = "Mira qué cartas envía tu ordenador por Internet, explicado para humanos."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Pablo Martínez" }]
+keywords = ["network", "privacy", "security", "monitor", "education", "red", "privacidad"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: System :: Networking :: Monitoring",
+  "Topic :: Security",
+  "Natural Language :: Spanish",
+  "Environment :: Web Environment",
+]
+dependencies = ["psutil>=5.9"]
+
+[project.optional-dependencies]
+captura = ["scapy>=2.5"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+cartero = "cartero.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/pablomtz-ti/cartero"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cartero = ["data/*.json", "web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731"]

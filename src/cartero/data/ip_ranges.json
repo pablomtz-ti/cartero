@@ -1,0 +1,32 @@
+{
+  "_comment": "Rangos de IP bien conocidos, para cuando no sabemos el nombre del destino. Es una aproximación: para precisión total usa 'cartero --online'.",
+  "8.8.8.0/24":       {"org": "Google", "country": "US", "kind": "os", "trusted": true},
+  "8.8.4.0/24":       {"org": "Google", "country": "US", "kind": "os", "trusted": true},
+  "74.125.0.0/16":    {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "142.250.0.0/15":   {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "172.217.0.0/16":   {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "172.253.0.0/16":   {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "216.58.192.0/19":  {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "2607:f8b0::/32":   {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+  "2a00:1450::/32":   {"org": "Google", "country": "US", "kind": "service", "trusted": true},
+
+  "17.0.0.0/8":       {"org": "Apple", "country": "US", "kind": "service", "trusted": true},
+
+  "13.107.0.0/16":    {"org": "Microsoft", "country": "US", "kind": "service", "trusted": true},
+  "20.190.128.0/18":  {"org": "Microsoft", "country": "US", "kind": "service", "trusted": true},
+  "40.126.0.0/18":    {"org": "Microsoft", "country": "US", "kind": "service", "trusted": true},
+
+  "1.1.1.0/24":       {"org": "Cloudflare", "country": "US", "kind": "os", "trusted": true},
+  "1.0.0.0/24":       {"org": "Cloudflare", "country": "US", "kind": "os", "trusted": true},
+  "104.16.0.0/13":    {"org": "Cloudflare", "country": "US", "kind": "cdn", "trusted": true},
+  "172.64.0.0/13":    {"org": "Cloudflare", "country": "US", "kind": "cdn", "trusted": true},
+  "162.158.0.0/15":   {"org": "Cloudflare", "country": "US", "kind": "cdn", "trusted": true},
+  "2606:4700::/32":   {"org": "Cloudflare", "country": "US", "kind": "cdn", "trusted": true},
+
+  "151.101.0.0/16":   {"org": "Fastly", "country": "US", "kind": "cdn", "trusted": true},
+  "157.240.0.0/16":   {"org": "Meta (Facebook)", "country": "US", "kind": "service", "trusted": true},
+  "31.13.24.0/21":    {"org": "Meta (Facebook)", "country": "US", "kind": "service", "trusted": true},
+  "140.82.112.0/20":  {"org": "GitHub", "country": "US", "kind": "service", "trusted": true},
+
+  "9.9.9.0/24":       {"org": "Quad9 (DNS seguro)", "country": "CH", "kind": "os", "trusted": true}
+}

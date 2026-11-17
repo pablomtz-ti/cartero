@@ -1,0 +1,13 @@
+{
+  "servidor": "Un ordenador encendido 24 horas en algún lugar del mundo que guarda webs, vídeos o mensajes. Como el almacén central de una tienda online.",
+  "cifrado": "Es como meter tu carta en una caja fuerte antes de enviarla por correo: solo el destinatario tiene la llave.",
+  "candado": "Significa que la conexión va cifrada: lo que se envía viaja dentro de un sobre cerrado y lacrado.",
+  "rastreador": "Un pequeño espía de publicidad metido en las webs que anota qué páginas visitas para mostrarte anuncios.",
+  "telemetría": "Estadísticas de uso que un programa envía a su fabricante: qué botones pulsas, si se cuelga, cuánto lo usas…",
+  "router": "La caja de tu operadora que reparte Internet por toda la casa. Todas tus cartas pasan por ella.",
+  "segundo plano": "Algo que un programa hace sin que lo veas, aunque tengas su ventana cerrada.",
+  "latido": "Un mensaje cortito que un programa envía cada pocos segundos para decir “sigo aquí, ¿hay algo nuevo?”.",
+  "dirección privada": "Los móviles modernos se inventan un número de identificación distinto en cada Wi-Fi para que no puedan seguirte.",
+  "postal abierta": "Una conexión sin cifrar: igual que una postal, cualquiera que la tenga en las manos por el camino puede leerla.",
+  "sobre cerrado": "Una conexión cifrada: nadie en el camino puede leer lo que va dentro, solo ver a quién va dirigido."
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartero</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" data-go="home" aria-label="Ir al inicio">
+      <span class="brand-mark" aria-hidden="true">✉️</span>
+      <span class="brand-name">Cartero</span>
+    </button>
+    <nav class="tabs" aria-label="Secciones">
+      <button data-go="live">En vivo</button>
+      <button data-go="wifi">Mi Wi-Fi</button>
+    </nav>
+    <span id="mode-badge" class="badge" hidden></span>
+  </header>
+
+  <main>
+    <!-- Pantalla 1: una sola pregunta -->
+    <section id="view-home" class="view">
+      <div class="hero">
+        <p class="eyebrow">Tu ordenador envía cartas por Internet todo el rato</p>
+        <h1>¿Qué quieres revisar hoy?</h1>
+      </div>
+      <div class="choices">
+        <button class="choice" data-go="scan">
+          <span class="choice-icon" aria-hidden="true">🔍</span>
+          <span class="choice-title">Revisar si hay algo raro en mi PC</span>
+          <span class="choice-sub">Miramos 30 segundos y te damos un veredicto claro.</span>
+        </button>
+        <button class="choice" data-go="live">
+          <span class="choice-icon" aria-hidden="true">👀</span>
+          <span class="choice-title">Ver qué hacen mis programas ahora mismo</span>
+          <span class="choice-sub">Una tarjeta por programa, en directo.</span>
+        </button>
+        <button class="choice" data-go="wifi">
+          <span class="choice-icon" aria-hidden="true">🏠</span>
+          <span class="choice-title">Ver quién está conectado a mi Wi-Fi</span>
+          <span class="choice-sub">Móviles, teles y aparatos de tu casa, con nombres que se entienden.</span>
+        </button>
+      </div>
+      <div class="legend" aria-label="Cómo leer Cartero">
+        <div><span class="seal sealed" aria-hidden="true">🔒</span><b>Sobre cerrado:</b> nadie por el camino puede leerlo.</div>
+        <div><span class="seal open" aria-hidden="true">✉️</span><b>Postal abierta:</b> cualquiera en tu Wi-Fi podría leerla.</div>
+      </div>
+    </section>
+
+    <!-- Escaneo de 30 segundos -->
+    <section id="view-scan" class="view" hidden>
+      <div id="scan-running" class="scan-running">
+        <div class="ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-bar" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <span class="ring-label"><b id="scan-seconds">30</b><small>segundos</small></span>
+        </div>
+        <h2>Mirando qué cartas salen de tu ordenador…</h2>
+        <p class="muted" id="scan-tip">Puedes seguir usando el ordenador con normalidad.</p>
+      </div>
+      <div id="scan-result" hidden>
+        <div id="verdict" class="verdict"></div>
+        <div id="scan-cards" class="cards"></div>
+        <div class="actions"><button class="btn" data-go="live">Ver todos los programas en vivo</button>
+          <button class="btn ghost" id="scan-again">Volver a revisar</button></div>
+      </div>
+    </section>
+
+    <!-- Pantalla 2: feed en vivo -->
+    <section id="view-live" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Qué hacen tus programas ahora mismo</h2>
+          <p class="muted">Se actualiza solo cada pocos segundos.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="hide-noise" checked>
+          <span class="switch-track" aria-hidden="true"></span>
+          <span>Silenciar ruido normal</span>
+        </label>
+      </div>
+      <p id="limited" class="notice" hidden>Hay programas del sistema que no podemos identificar sin permisos de administrador. Abre Cartero con <code>sudo</code> para verlos todos.</p>
+      <button id="noise-counter" class="noise-counter" hidden></button>
+      <div id="live-cards" class="cards" aria-live="polite"></div>
+      <p id="live-empty" class="empty" hidden>Ahora mismo ningún programa está enviando cartas. 💤</p>
+    </section>
+
+    <!-- Wi-Fi -->
+    <section id="view-wifi" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Quién está conectado a tu Wi-Fi</h2>
+          <p class="muted">Aparatos con los que tu ordenador ha hablado hace poco.</p>
+        </div>
+        <button class="btn" id="wifi-deep">Buscar más a fondo</button>
+      </div>
+      <div id="wifi-list" class="devices"></div>
+      <p id="wifi-empty" class="empty" hidden>No hemos encontrado aparatos. Prueba con «Buscar más a fondo».</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    Cartero no guarda ni envía lo que viaja por tu red: todo se analiza en este ordenador.
+  </footer>
+
+  <!-- Pantalla 3: semáforo de riesgo -->
+  <dialog id="modal" aria-labelledby="modal-title">
+    <form method="dialog" class="modal-close"><button aria-label="Cerrar">✕</button></form>
+    <div id="modal-body"></div>
+  </dialog>
+</body>
+</html>
